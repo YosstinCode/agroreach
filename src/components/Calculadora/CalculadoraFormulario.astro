@@ -1,0 +1,86 @@
+---
+---
+
+<div class="bg-white p-5 rounded shadow wow fadeInUp" data-wow-delay="0.2s">
+
+    <h4 class="text-success mb-4">Ingresa tus Datos</h4>
+  <form>
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="form-floating">
+          <input type="text" class="form-control border-0" id="nombre" placeholder="Nombre" style="background-color: #e8f5e9" />
+          <label for="nombre" style="color: #004d40">Nombre</label>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="form-floating">
+          <input type="text" class="form-control border-0" id="apellido" placeholder="Apellido" style="background-color: #e8f5e9" />
+          <label for="apellido" style="color: #004d40">Apellido</label>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="form-floating">
+          <select class="form-select border-0" id="tipoDocumento" style="background-color: #e8f5e9">
+            <option value="CC">Cédula de Ciudadanía</option>
+            <option value="CE">Cédula de Extranjería</option>
+            <option value="NIT">NIT</option>
+          </select>
+          <label for="tipoDocumento" style="color: #004d40">Tipo de Documento</label>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="form-floating">
+          <input type="text" class="form-control border-0" id="cedula" placeholder="Número de Documento" style="background-color: #e8f5e9" />
+          <label for="cedula" style="color: #004d40">Número de Documento</label>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="form-floating">
+          <input type="email" class="form-control border-0" id="correo" placeholder="Correo Electrónico" style="background-color: #e8f5e9" />
+          <label for="correo" style="color: #004d40">Correo Electrónico</label>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="form-floating">
+          <input type="tel" class="form-control border-0" id="telefono" placeholder="Teléfono" style="background-color: #e8f5e9" />
+          <label for="telefono" style="color: #004d40">Teléfono</label>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="form-floating">
+          <input type="number" class="form-control border-0" id="ingresos" placeholder="Ingresos Mensuales" style="background-color: #e8f5e9" />
+          <label for="ingresos" style="color: #004d40">Ingresos Mensuales</label>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="form-floating">
+          <input type="number" class="form-control border-0" id="monto" placeholder="Monto Solicitado" style="background-color: #e8f5e9" />
+          <label for="monto" style="color: #004d40">Monto Solicitado</label>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="form-floating">
+          <select class="form-select border-0" id="frecuenciaCuotas" style="background-color: #e8f5e9">
+            <option value="12">1 Año (12 meses)</option>
+            <option value="24">2 Años (24 meses)</option>
+            <option value="36">3 Años (36 meses)</option>
+            <option value="48">4 Años (48 meses)</option>
+            <option value="60">5 Años (60 meses)</option>
+          </select>
+          <label for="frecuenciaCuotas" style="color: #004d40">Frecuencia de Pago</label>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="form-floating">
+          <textarea class="form-control border-0" placeholder="Comentarios" id="comentarios" style="height: 120px; background-color: #e8f5e9"></textarea>
+          <label for="comentarios" style="color: #004d40">Comentarios</label>
+        </div>
+      </div>
+      <div class="col-12">
+        <button class="btn btn-success w-100 py-3" style="background-color: #00d084; color: #fff">
+          Calcular Crédito
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

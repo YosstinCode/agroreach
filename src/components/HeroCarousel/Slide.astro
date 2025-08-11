@@ -1,0 +1,21 @@
+---
+import { Image } from "astro:assets";
+import SlideContent from './SlideContent.astro';
+
+export interface Props {
+  slide: any;
+  idx: number;
+}
+const { slide, idx } = Astro.props;
+---
+<div class="header-carousel-item">
+  <Image src={slide.img} class="img-fluid w-100" alt="Image" />
+  <div class="carousel-caption">
+    <div class="container">
+      <div class="row gy-0 gx-5">
+        <div class="col-lg-0 col-xl-5"></div>
+        <SlideContent slide={slide} idx={idx} />
+      </div>
+    </div>
+  </div>
+</div>

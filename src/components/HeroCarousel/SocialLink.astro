@@ -1,0 +1,11 @@
+---
+export interface Props {
+  href: string;
+  icon: string;
+  className?: string;
+}
+const { href, icon, className = "" } = Astro.props;
+---
+<a class={`btn btn-md-square btn-light rounded-circle ${className}`} href={href}>
+  <i class={icon}></i>
+</a>

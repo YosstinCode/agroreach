@@ -1,0 +1,20 @@
+---
+import Layout from '@layouts/Layout.astro';
+import Spinner from '@components/Spinner/Spinner.astro';
+import TopBar from '@components/TopBar/TopBar.astro';
+import About from '@components/About/About.astro';
+import Testimonial from '@components/Testimonial/Testimonial.astro';
+import LayoutNavbar from '@layouts/LayoutNavbar.astro';
+import HeroCarousel from '@components/HeroCarousel/HeroCarousel.astro';
+
+---
+
+<Layout>
+  <Spinner />
+  <TopBar />
+  <LayoutNavbar>
+	<HeroCarousel />
+  </LayoutNavbar>
+  <About />
+  <Testimonial />
+</Layout>

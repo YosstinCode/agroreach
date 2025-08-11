@@ -1,0 +1,20 @@
+---
+export interface Props {
+  btn1: { label: string; icon?: string; href: string };
+  btn2: { label: string; href: string };
+  idx: number;
+}
+const { btn1, btn2, idx } = Astro.props;
+---
+<div class={`d-flex ${idx === 0 ? "justify-content-center justify-content-md-end" : "justify-content-center"} flex-shrink-0 mb-4`}>
+  <a class="btn btn-light rounded-pill py-3 px-4 px-md-5 me-2" href={btn1.href}>
+    {btn1.icon && <i class={btn1.icon + " me-2"}></i>}
+    {btn1.label}
+  </a>
+  <a
+    class="btn btn-primary rounded-pill py-3 px-4 px-md-5 ms-2"
+    href={btn2.href}
+  >
+    {btn2.label}
+  </a>
+</div>

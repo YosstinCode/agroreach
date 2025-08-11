@@ -1,0 +1,19 @@
+---
+import SlideButtons from './SlideButtons.astro';
+import SocialLinks from './SocialLinks.astro';
+
+export interface Props {
+  slide: any;
+  idx: number;
+}
+const { slide, idx } = Astro.props;
+---
+<div class={`col-xl-7 animated ${idx === 0 ? "fadeInLeft" : "fadeInUp"}`}>
+  <div class={idx === 0 ? "text-sm-center text-md-end" : "text-center"}>
+    <h4 class="text-primary text-uppercase fw-bold mb-4">{slide.title}</h4>
+    <h1 class="display-4 text-uppercase text-white mb-4">{slide.headline}</h1>
+    <p class="mb-5 fs-5">{slide.desc}</p>
+    <SlideButtons btn1={slide.btn1} btn2={slide.btn2} idx={idx} />
+    <SocialLinks idx={idx} />
+  </div>
+</div>

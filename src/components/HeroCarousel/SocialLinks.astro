@@ -1,0 +1,23 @@
+---
+import SocialLink from './SocialLink.astro';
+
+export interface Props {
+  idx: number;
+}
+const { idx } = Astro.props;
+
+const links = [
+  { href: "", icon: "fab fa-facebook-f", className: "me-2" },
+  { href: "", icon: "fab fa-twitter", className: "mx-2" },
+  { href: "", icon: "fab fa-instagram", className: "mx-2" },
+  { href: "", icon: "fab fa-linkedin-in", className: "ms-2" },
+];
+---
+<div class={`d-flex align-items-center ${idx === 0 ? "justify-content-center justify-content-md-end" : "justify-content-center"}`}>
+  <h2 class="text-white me-2">Síguenos:</h2>
+  <div class="d-flex justify-content-end ms-2">
+    {links.map(link => (
+      <SocialLink {...link} />
+    ))}
+  </div>
+</div>

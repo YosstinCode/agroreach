@@ -1,0 +1,92 @@
+---
+
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<!-- favicon png -->
+		<link rel="icon" type="image/png" href="/logo.png" />
+		<meta name="generator" content={Astro.generator} />
+
+		<title>Agroreach</title>
+
+	
+		<!-- Libraries Stylesheet -->
+		<link rel="stylesheet" href="lib/animate/animate.min.css" />
+		<link href="lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
+		<link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+
+		<!-- Icon Font Stylesheet -->
+		<link
+		rel="stylesheet"
+		href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+		/>
+		<link
+		href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
+		rel="stylesheet"
+		/>
+		
+		<!-- Customized Bootstrap Stylesheet -->
+		<link href="css/bootstrap.min.css" rel="stylesheet" />
+
+		<!-- Template Stylesheet -->
+		<link href="css/style.css" rel="stylesheet" />
+
+		<style lang="scss">
+			/******* Customized Bootstrap ********/
+
+			$primary: #00D084;
+			$secondary:#17303B;
+			$light: #F8F8F8;
+			$dark: #111111;
+
+			$font-family-base: "Inter",sans-serif;
+
+			$headings-font-family: "Roboto", sans-serif;
+
+			$body-color: #787878;
+
+			$headings-color: $dark;
+
+			$headings-font-weight: 500;
+
+			$display-font-weight: 700;
+
+			$enable-responsive-font-sizes: true;
+
+			$border-radius: 10px;
+
+			$border-radius-sm: $border-radius;
+
+			$border-radius-lg: $border-radius;
+
+			$link-decoration: none;
+
+			$enable-negative-margins: true;
+
+			@import "bootstrap/scss/bootstrap";
+		</style>
+
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>
+
+
+
+<!-- JavaScript Libraries -->
+<script isinline src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script isinline src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script isinline src="lib/wow/wow.min.js"></script>
+<script isinline src="lib/easing/easing.min.js"></script>
+<script isinline src="lib/waypoints/waypoints.min.js"></script>
+<script isinline src="lib/counterup/counterup.min.js"></script>
+<script isinline src="lib/lightbox/js/lightbox.min.js"></script>
+<script isinline src="lib/owlcarousel/owl.carousel.min.js"></script>
+
+<!-- Template Javascript -->
+<script isinline src="js/main.js"></script>

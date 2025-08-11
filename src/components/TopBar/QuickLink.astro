@@ -1,0 +1,14 @@
+---
+export interface Props {
+  href: string;
+  icon: string;
+  color?: string;
+  children: any;
+}
+const { href, icon, color = "primary", children } = Astro.props;
+---
+<a href={href}>
+  <small class="me-3 text-dark">
+    <i class={`fa ${icon} text-${color} me-2`}></i>{children}
+  </small>
+</a>

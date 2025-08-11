@@ -1,0 +1,32 @@
+---
+import Layout from '@layouts/Layout.astro';
+import Spinner from '@components/Spinner/Spinner.astro';
+import TopBar from '@components/TopBar/TopBar.astro';
+import LayoutNavbar from '@layouts/LayoutNavbar.astro';
+import CalculadoraFormulario from '@components/Calculadora/CalculadoraFormulario.astro';
+import TablaAmortizacion from '@components/Calculadora/TablaAmortizacion.astro';
+---
+
+<Layout>
+  <Spinner />
+  <TopBar />
+  <LayoutNavbar>
+    <div class="container-fluid calculator py-5" style="background-color: #f4f4f4">
+      <div class="container py-5">
+        <div class="text-center mx-auto pb-5 wow fadeInUp" data-wow-delay="0.2s" style="max-width: 800px">
+          <h4 class="text-success">Calculadora de Créditos</h4>
+          <h1 class="display-5 mb-4" style="color: #004d40">
+            Descubre el Crédito Ideal para tu Negocio Agropecuario
+          </h1>
+          <p class="mb-0" style="color: #333">
+            Completa los campos a continuación y obtén una estimación personalizada para impulsar tu futuro en el campo.
+          </p>
+        </div>
+
+            <CalculadoraFormulario />      
+            <TablaAmortizacion />
+
+      </div>
+    </div>
+  </LayoutNavbar>
+</Layout>

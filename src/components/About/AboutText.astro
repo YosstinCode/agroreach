@@ -1,0 +1,47 @@
+---
+import AboutFeature from './AboutFeature.astro';
+---
+
+<div class="col-xl-7 wow fadeInLeft" data-wow-delay="0.2s">
+  <div>
+    <h4 class="text-primary">Sobre Nosotros</h4>
+    <h1 class="display-5 mb-4">
+      Impulsamos el crecimiento del agro colombiano
+    </h1>
+    <p class="mb-4">
+      Somos una fintech dedicada a ofrecer soluciones financieras digitales y
+      accesibles para productores, campesinos y empresarios del agro. Nuestra
+      misión es facilitar el acceso a créditos ágiles y transparentes para que
+      puedas invertir en tu finca o negocio y alcanzar tus metas.
+    </p>
+    <div class="row g-4">
+      <AboutFeature
+        icon="fas fa-lightbulb"
+        title="Simulación Inteligente"
+        text="Descubre en minutos el crédito que puedes obtener y las mejores condiciones para tu proyecto agropecuario."
+      />
+      <AboutFeature
+        icon="bi bi-bookmark-heart-fill"
+        title="Experiencia en Agro"
+        text="Conocemos las necesidades del campo colombiano y te ayudamos a crecer con soluciones pensadas para ti."
+      />
+      <div class="col-sm-6">
+        <a
+          href="#"
+          class="btn btn-primary rounded-pill py-3 px-5 flex-shrink-0"
+        >Simula tu Crédito</a>
+      </div>
+      <div class="col-sm-6">
+        <div class="d-flex">
+          <i class="fas fa-phone-alt fa-2x text-primary me-4"></i>
+          <div>
+            <h4>Llámanos</h4>
+            <p class="mb-0 fs-5" style="letter-spacing: 1px">
+              +01234567890
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

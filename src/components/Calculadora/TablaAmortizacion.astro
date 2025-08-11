@@ -1,0 +1,105 @@
+---
+const datosPrestamo = {
+  monto: "$ 3.000.000,00",
+  tasa: "5,50%",
+  plazo: "24",
+  frecuencia: "Mensual",
+  cuotaFija: "$ 228.107,41"
+};
+
+const amortizacion = [
+  { periodo: 0, saldoInicial: "$ 3.000.000", cuotaFija: "", interes: "", abonoCapital: "", saldoFinal: "$ 3.000.000" },
+  { periodo: 1, saldoInicial: "$ 3.000.000", cuotaFija: "$ 228.107", interes: "$ 165.000", abonoCapital: "$ 63.107", saldoFinal: "$ 2.936.893" },
+  { periodo: 2, saldoInicial: "$ 2.936.893", cuotaFija: "$ 228.107", interes: "$ 161.529", abonoCapital: "$ 66.578", saldoFinal: "$ 2.870.314" },
+  { periodo: 3, saldoInicial: "$ 2.870.314", cuotaFija: "$ 228.107", interes: "$ 157.867", abonoCapital: "$ 70.240", saldoFinal: "$ 2.800.074" },
+  { periodo: 4, saldoInicial: "$ 2.800.074", cuotaFija: "$ 228.107", interes: "$ 154.004", abonoCapital: "$ 74.103", saldoFinal: "$ 2.725.971" },
+  { periodo: 5, saldoInicial: "$ 2.725.971", cuotaFija: "$ 228.107", interes: "$ 149.928", abonoCapital: "$ 78.179", saldoFinal: "$ 2.647.792" },
+  { periodo: 6, saldoInicial: "$ 2.647.792", cuotaFija: "$ 228.107", interes: "$ 145.629", abonoCapital: "$ 82.479", saldoFinal: "$ 2.565.313" },
+  { periodo: 7, saldoInicial: "$ 2.565.313", cuotaFija: "$ 228.107", interes: "$ 141.092", abonoCapital: "$ 87.015", saldoFinal: "$ 2.478.298" },
+  { periodo: 8, saldoInicial: "$ 2.478.298", cuotaFija: "$ 228.107", interes: "$ 136.306", abonoCapital: "$ 91.801", saldoFinal: "$ 2.386.497" },
+  { periodo: 9, saldoInicial: "$ 2.386.497", cuotaFija: "$ 228.107", interes: "$ 131.257", abonoCapital: "$ 96.850", saldoFinal: "$ 2.289.647" },
+  { periodo: 10, saldoInicial: "$ 2.289.647", cuotaFija: "$ 228.107", interes: "$ 125.931", abonoCapital: "$ 102.177", saldoFinal: "$ 2.187.470" },
+  { periodo: 11, saldoInicial: "$ 2.187.470", cuotaFija: "$ 228.107", interes: "$ 120.311", abonoCapital: "$ 107.797", saldoFinal: "$ 2.079.673" },
+  { periodo: 12, saldoInicial: "$ 2.079.673", cuotaFija: "$ 228.107", interes: "$ 114.382", abonoCapital: "$ 113.725", saldoFinal: "$ 1.965.948" },
+  { periodo: 13, saldoInicial: "$ 1.965.948", cuotaFija: "$ 228.107", interes: "$ 108.127", abonoCapital: "$ 119.980", saldoFinal: "$ 1.845.968" },
+  { periodo: 14, saldoInicial: "$ 1.845.968", cuotaFija: "$ 228.107", interes: "$ 101.528", abonoCapital: "$ 126.579", saldoFinal: "$ 1.719.388" },
+  { periodo: 15, saldoInicial: "$ 1.719.388", cuotaFija: "$ 228.107", interes: "$ 94.566", abonoCapital: "$ 133.541", saldoFinal: "$ 1.585.847" },
+  { periodo: 16, saldoInicial: "$ 1.585.847", cuotaFija: "$ 228.107", interes: "$ 87.222", abonoCapital: "$ 140.886", saldoFinal: "$ 1.444.961" },
+  { periodo: 17, saldoInicial: "$ 1.444.961", cuotaFija: "$ 228.107", interes: "$ 79.473", abonoCapital: "$ 148.635", saldoFinal: "$ 1.296.327" },
+  { periodo: 18, saldoInicial: "$ 1.296.327", cuotaFija: "$ 228.107", interes: "$ 71.298", abonoCapital: "$ 156.809", saldoFinal: "$ 1.139.517" },
+  { periodo: 19, saldoInicial: "$ 1.139.517", cuotaFija: "$ 228.107", interes: "$ 62.673", abonoCapital: "$ 165.434", saldoFinal: "$ 974.084" },
+  { periodo: 20, saldoInicial: "$ 974.084", cuotaFija: "$ 228.107", interes: "$ 53.575", abonoCapital: "$ 174.533", saldoFinal: "$ 799.551" },
+  { periodo: 21, saldoInicial: "$ 799.551", cuotaFija: "$ 228.107", interes: "$ 43.975", abonoCapital: "$ 184.132", saldoFinal: "$ 615.419" },
+  { periodo: 22, saldoInicial: "$ 615.419", cuotaFija: "$ 228.107", interes: "$ 33.848", abonoCapital: "$ 194.259", saldoFinal: "$ 421.159" },
+  { periodo: 23, saldoInicial: "$ 421.159", cuotaFija: "$ 228.107", interes: "$ 23.164", abonoCapital: "$ 204.944", saldoFinal: "$ 216.216" },
+  { periodo: 24, saldoInicial: "$ 216.216", cuotaFija: "$ 228.107", interes: "$ 11.892", abonoCapital: "$ 216.216", saldoFinal: "$ 0" },
+];
+---
+
+<div class="container wow fadeInUp" style="margin-top: 4rem;" data-wow-delay="0.3s">
+  <div class="text-center mb-4">
+    <h4 class="text-success">Tabla de Amortización</h4>
+    <h1 class="display-5 mb-3" style="color: #004d40;">
+      Detalle de pagos de tu crédito
+    </h1>
+    <p class="mb-0" style="color: #333;">
+      Consulta el desglose de cada cuota y cómo disminuye tu saldo mes a mes.
+    </p>
+  </div>
+
+  <div class="row justify-content-center mb-4">
+    <div class="col-auto">
+      <table class="table table-borderless mb-0">
+        <tbody>
+          <tr>
+            <th class="text-end" style="color:#004d40;">Monto del préstamo</th>
+            <td class="fw-bold" style="color:#00d084;">{datosPrestamo.monto}</td>
+          </tr>
+          <tr>
+            <th class="text-end" style="color:#004d40;">Tasa de interés anual</th>
+            <td>{datosPrestamo.tasa}</td>
+          </tr>
+          <tr>
+            <th class="text-end" style="color:#004d40;">Plazo del préstamo</th>
+            <td>{datosPrestamo.plazo} meses</td>
+          </tr>
+          <tr>
+            <th class="text-end" style="color:#004d40;">Frecuencia de pagos</th>
+            <td>{datosPrestamo.frecuencia}</td>
+          </tr>
+          <tr>
+            <th class="text-end" style="color:#004d40;">Cuota Fija</th>
+            <td class="fw-bold" style="color:#00d084;">{datosPrestamo.cuotaFija}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-bordered align-middle text-center shadow-sm" style="background:#fff;">
+      <thead style="background: #00d084;">
+        <tr style="color: #fff;">
+          <th>Periodo</th>
+          <th>Saldo inicial</th>
+          <th>Cuota Fija</th>
+          <th>Interés</th>
+          <th>Abono a Capital</th>
+          <th>Saldo Final</th>
+        </tr>
+      </thead>
+      <tbody>
+        {amortizacion.map((fila, idx) => (
+          <tr style={`background:${idx % 2 === 0 ? "#f9f9f9" : "#fff"};`}>
+            <td>{fila.periodo}</td>
+            <td>{fila.saldoInicial}</td>
+            <td>{fila.cuotaFija}</td>
+            <td>{fila.interes}</td>
+            <td>{fila.abonoCapital}</td>
+            <td>{fila.saldoFinal}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>

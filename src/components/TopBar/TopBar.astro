@@ -1,0 +1,18 @@
+---
+import UserDropdown from './UserDropdown.astro';
+import QuickLink from './QuickLink.astro';
+---
+<!-- Topbar Start -->
+<div class="container-fluid topbar bg-light px-5 d-none d-lg-block">
+  <div class="row gx-0 align-items-center">
+    <div class="col-lg-8 text-center text-lg-start mb-2 mb-lg-0"></div>
+    <div class="col-lg-4 text-center text-lg-end">
+      <div class="d-inline-flex align-items-center" style="height: 45px">
+        <QuickLink href="#" icon="fa-user">Register</QuickLink>
+        <QuickLink href="#" icon="fa-sign-in-alt">Login</QuickLink>
+        <UserDropdown />
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Topbar End -->

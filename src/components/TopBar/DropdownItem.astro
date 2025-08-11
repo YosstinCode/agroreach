@@ -1,0 +1,12 @@
+---
+export interface Props {
+  href: string;
+  icon: string;
+}
+const { href, icon } = Astro.props;
+---
+<a href={href} class="dropdown-item">
+  <small>
+    <i class={icon + " me-2"}></i> <slot />
+  </small>
+</a>

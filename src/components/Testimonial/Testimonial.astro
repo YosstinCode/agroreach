@@ -1,0 +1,87 @@
+---
+import { Image } from "astro:assets";
+import testimonial1 from "@assets/img/testimonial1.jpg";
+import testimonial2 from "@assets/img/testimonial2.jpg";
+import testimonial3 from "@assets/img/testimonial3.jpg";
+import testimonial4 from "@assets/img/testimonial4.jpg";
+
+const testimonials = [
+  {
+    img: testimonial1,
+    text: "Gracias a la calculadora pude saber cuánto crédito podía solicitar y ahora mi finca está creciendo más que nunca.",
+    name: "Juan Pérez",
+    profession: "Productor de café",
+    stars: 5,
+  },
+  {
+    img: testimonial2,
+    text: "El proceso fue rápido y transparente. Recomiendo esta plataforma a todos los campesinos que buscan apoyo financiero.",
+    name: "María Rodríguez",
+    profession: "Campesina",
+    stars: 5,
+  },
+  {
+    img: testimonial3,
+    text: "Simulé mi crédito en minutos y obtuve excelentes condiciones para invertir en maquinaria agrícola.",
+    name: "Carlos Gómez",
+    profession: "Empresario agropecuario",
+    stars: 5,
+  },
+  {
+    img: testimonial4,
+    text: "Una herramienta fácil de usar y con información clara. ¡Muy útil para el sector agro!",
+    name: "Ana Torres",
+    profession: "Productora de flores",
+    stars: 5,
+  },
+];
+---
+
+<div class="container-fluid testimonial pb-5">
+  <div class="container pb-5">
+    <div
+      class="text-center mx-auto pb-5 wow fadeInUp"
+      data-wow-delay="0.2s"
+      style="max-width: 800px"
+    >
+      <h4 class="text-primary">Testimonios</h4>
+      <h1 class="display-5 mb-4">Lo que dicen nuestros clientes</h1>
+      <p class="mb-0">
+        Descubre cómo nuestra calculadora de créditos ha ayudado a productores, campesinos y empresarios del agro a impulsar sus proyectos y alcanzar sus metas.
+      </p>
+    </div>
+    <div
+      class="owl-carousel testimonial-carousel wow fadeInUp"
+      data-wow-delay="0.2s"
+    >
+      {testimonials.map((t, idx) => (
+        <div class="testimonial-item" key={idx}>
+          <div class="testimonial-quote-left">
+            <i class="fas fa-quote-left fa-2x"></i>
+          </div>
+          <div class="testimonial-img">
+            <Image src={t.img} class="img-fluid rounded-circle object-fit-cover" style="width:100px; height:100px; object-fit:cover;"
+     alt={t.name} />
+          </div>
+          <div class="testimonial-text">
+            <p class="mb-0">{t.text}</p>
+          </div>
+          <div class="testimonial-title">
+            <div>
+              <h4 class="mb-0">{t.name}</h4>
+              <p class="mb-0">{t.profession}</p>
+            </div>
+            <div class="d-flex text-primary">
+              {[...Array(t.stars)].map((_, i) => (
+                <i class="fas fa-star" key={i}></i>
+              ))}
+            </div>
+          </div>
+          <div class="testimonial-quote-right">
+            <i class="fas fa-quote-right fa-2x"></i>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>

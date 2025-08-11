@@ -1,0 +1,47 @@
+---
+import { Image } from "astro:assets";
+import about2 from "@assets/img/about-2.png";
+import about3 from "@assets/img/about-3.png";
+import about4 from "@assets/img/about-4.png";
+import about5 from "@assets/img/about-5.jpg";
+---
+
+<div class="col-xl-5 wow fadeInRight" data-wow-delay="0.2s">
+  <div class="bg-primary rounded position-relative overflow-hidden">
+    <Image
+      src={about2}
+      class="img-fluid rounded w-100"
+      alt="Sobre nosotros"
+    />
+    <div style="position: absolute; top: -15px; right: -15px">
+      <Image
+        src={about3}
+        class="img-fluid"
+        style="width: 150px; height: 150px; opacity: 0.7"
+        alt=""
+      />
+    </div>
+    <div
+      style="
+        position: absolute;
+        top: -20px;
+        left: 10px;
+        transform: rotate(90deg);
+      "
+    >
+      <Image
+        src={about4}
+        class="img-fluid"
+        style="width: 100px; height: 150px; opacity: 0.9"
+        alt=""
+      />
+    </div>
+    <div class="rounded-bottom">
+      <Image
+        src={about5}
+        class="img-fluid rounded-bottom w-100"
+        alt=""
+      />
+    </div>
+  </div>
+</div>
