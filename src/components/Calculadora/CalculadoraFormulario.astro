@@ -67,7 +67,7 @@
             <option value="48">4 Años (48 meses)</option>
             <option value="60">5 Años (60 meses)</option>
           </select>
-          <label for="frecuenciaCuotas" style="color: #004d40">Frecuencia de Pago</label>
+          <label for="frecuenciaCuotas" style="color: #004d40">Tiempo del credito</label>
         </div>
       </div>
       <div class="col-12">
@@ -84,3 +84,44 @@
     </div>
   </form>
 </div>
+<script type="module">
+  import { calcularDesdeFormulario } from '/js/credito-core.js';
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('.bg-white form') || document.querySelector('form');
+    if (!form) { console.warn('No se encontró el formulario'); return; }
+
+    // Inserta el select de periodicidad si no existe
+    if (!document.getElementById('periodicidad')) {
+      const duracionCol = document.querySelector('#frecuenciaCuotas')?.closest('.col-lg-6');
+      const col = document.createElement('div');
+      col.className = 'col-lg-6';
+      col.innerHTML = `
+        <div class="form-floating">
+          <select class="form-select border-0" id="periodicidad" style="background-color:#e8f5e9">
+            <option value="">Selecciona periodicidad…</option>
+            <option value="mensual">Mensual (1,57%)</option>
+            <option value="trimestral">Trimestral (4,77%)</option>
+            <option value="cuatrimestral">Cuatrimestral (6,41%)</option>
+            <option value="semestral">Semestral (9,77%)</option>
+            <option value="anual">Anual (21,26%)</option>
+          </select>
+          <label for="periodicidad" style="color:#004d40">Periodicidad de pagos</label>
+        </div>`;
+      (duracionCol || form.querySelector('.row.g-4') || form).insertAdjacentElement('beforeend', col);
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      try {
+        const payload = calcularDesdeFormulario(form);
+        // log mínimo para verificar flujo
+        console.log('credito:calculado → payload', payload.resumen);
+        window.dispatchEvent(new CustomEvent('credito:calculado', { detail: payload }));
+        document.getElementById('amort-body')?.closest('.container')?.scrollIntoView({ behavior: 'smooth' });
+      } catch (err) {
+        alert(err?.message || 'No se pudo calcular el crédito.');
+      }
+    });
+  });
+</script>
