@@ -11,6 +11,14 @@
       <table class="table table-borderless mb-0">
         <tbody>
           <tr>
+            <th class="text-end" style="color:#004d40;">Banco</th>
+            <td id="t-banco">—</td>
+          </tr>
+          <tr>
+            <th class="text-end" style="color:#004d40;">Producto</th>
+            <td id="t-producto">—</td>
+          </tr>
+          <tr>
             <th class="text-end" style="color:#004d40;">Monto del préstamo</th>
             <td id="t-monto" class="fw-bold" style="color:#00d084;">—</td>
           </tr>
@@ -56,14 +64,89 @@
 </div>
 
 <script type="module">
-  import { fmtCOP, fmtPct } from '/js/credito-core.js';
+  import { BANCOS, PERIODICIDADES, fmtPct, fmtCOP, calcularDesdeFormulario } from '/js/credito-core.js';
 
-  const capitalizar = s => s ? s[0].toUpperCase()+s.slice(1) : '';
+  const cap = s => s ? s[0].toUpperCase()+s.slice(1) : '';
 
-  // Nos suscribimos cuando el DOM ya está
   window.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('.bg-white form') || document.querySelector('form');
+    if (!form) return;
+
+    // 1) Localizo "Tiempo del crédito"
+    const duracionCol = form.querySelector('#frecuenciaCuotas')?.closest('.col-lg-6, .col-md-6, .col-12');
+
+    // Normalizo clases para armar 3 columnas: Banco / Tiempo / Periodicidad
+    const setCols = el => { el.classList.remove('col-lg-6'); el.classList.add('col-12','col-md-6','col-lg-4'); };
+    if (duracionCol) setCols(duracionCol);
+
+    // 2) Inserto <select id="banco"> ANTES de "Tiempo del crédito"
+    if (!document.getElementById('banco')) {
+      const bancosCol = document.createElement('div');
+      bancosCol.className = 'col-12 col-md-6 col-lg-4';
+      bancosCol.innerHTML = `
+        <div class="form-floating">
+          <select class="form-select border-0" id="banco" style="background-color:#e8f5e9">
+            <option value="">Selecciona banco…</option>
+            ${Object.entries(BANCOS).map(([id,b]) =>
+              `<option value="${id}">${b.nombre}${b.producto ? ' — ' + b.producto : ''}</option>`
+            ).join('')}
+          </select>
+          <label for="banco" style="color:#004d40">Banco</label>
+        </div>`;
+      if (duracionCol) duracionCol.insertAdjacentElement('beforebegin', bancosCol);
+      else (form.querySelector('.row.g-4') || form).appendChild(bancosCol);
+    }
+
+    // 3) Inserto <select id="periodicidad"> DESPUÉS de "Tiempo del crédito"
+    let periCol = document.getElementById('periodicidad')?.closest('.col-12, .col-md-6, .col-lg-6, .col-lg-4');
+    if (!periCol) {
+      periCol = document.createElement('div');
+      periCol.className = 'col-12 col-md-6 col-lg-4';
+      periCol.innerHTML = `
+        <div class="form-floating">
+          <select class="form-select border-0" id="periodicidad" style="background-color:#e8f5e9">
+            <option value="">Selecciona periodicidad…</option>
+          </select>
+          <label for="periodicidad" style="color:#004d40">Periodicidad de pagos</label>
+        </div>`;
+      if (duracionCol) duracionCol.insertAdjacentElement('afterend', periCol);
+      else (form.querySelector('.row.g-4') || form).appendChild(periCol);
+    } else {
+      setCols(periCol);
+    }
+
+    const selBanco = form.querySelector('#banco');
+    const selPeri  = form.querySelector('#periodicidad');
+
+    // 4) Al cambiar de banco → refresco opciones de periodicidad con el % del banco
+    function refreshPeriodicidades() {
+      const banco = BANCOS[selBanco.value];
+      selPeri.innerHTML = `<option value="">Selecciona periodicidad…</option>` +
+        PERIODICIDADES.map(p => {
+          const t = banco?.tasas?.[p];
+          return `<option value="${p}" ${typeof t==='number'?'':'disabled'}>
+                    ${p.charAt(0).toUpperCase()+p.slice(1)} ${typeof t==='number' ? '('+fmtPct(t)+')' : '(N/D)'}
+                  </option>`;
+        }).join('');
+    }
+    selBanco.addEventListener('change', refreshPeriodicidades);
+
+    // 5) Submit → calcular → emitir evento para la tabla
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      try {
+        const payload = calcularDesdeFormulario(form);
+        window.dispatchEvent(new CustomEvent('credito:calculado', { detail: payload }));
+        document.getElementById('tabla-credito')?.scrollIntoView({ behavior: 'smooth' });
+      } catch (err) {
+        alert(err?.message || 'No se pudo calcular el crédito.');
+      }
+    });
+
+    // 6) Escuchar y pintar la tabla
     window.addEventListener('credito:calculado', ({ detail }) => {
-      // Re-seleccionamos SIEMPRE para evitar null
+      const tBanco = document.getElementById('t-banco');
+      const tProducto = document.getElementById('t-producto');
       const tMonto = document.getElementById('t-monto');
       const tTasa = document.getElementById('t-tasa');
       const tPlazo = document.getElementById('t-plazo');
@@ -71,21 +154,20 @@
       const tCuota = document.getElementById('t-cuota');
       const body = document.getElementById('amort-body');
 
-      if (!tMonto || !tTasa || !tPlazo || !tFrecuencia || !tCuota || !body) {
-        console.warn('IDs de la tabla no encontrados; revisa que el HTML tenga t-monto/t-tasa/t-plazo/t-frecuencia/t-cuota/amort-body.');
-        return;
-      }
+      if (!tBanco || !tProducto || !tMonto || !tTasa || !tPlazo || !tFrecuencia || !tCuota || !body) return;
 
-      const { resumen, filas } = detail;
+      const { banco, resumen, filas } = detail;
 
       // Resumen
+      tBanco.textContent = banco?.nombre ?? '—';
+      tProducto.textContent = banco?.producto || '—';
       tMonto.textContent = fmtCOP(resumen.monto);
       tTasa.textContent = fmtPct(resumen.tasaPeriodo);
       tPlazo.textContent = `${resumen.mesesTotal} meses • ${resumen.cuotas} cuotas (${resumen.mesesPorPeriodo} m/periodo)`;
-      tFrecuencia.textContent = capitalizar(resumen.periodicidad);
+      tFrecuencia.textContent = cap(resumen.periodicidad);
       tCuota.textContent = fmtCOP(resumen.cuota);
 
-      // Detalle
+      // Cuerpo de la tabla
       let rows = `
         <tr style="background:#f9f9f9;">
           <td>0</td>
