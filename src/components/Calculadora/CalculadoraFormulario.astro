@@ -24,6 +24,7 @@
             <option value="CC">Cédula de Ciudadanía</option>
             <option value="CE">Cédula de Extranjería</option>
             <option value="NIT">NIT</option>
+          
           </select>
           <label for="tipoDocumento" style="color: #004d40">Tipo de Documento</label>
         </div>
@@ -89,13 +90,13 @@
 
   window.addEventListener('DOMContentLoaded', () => {
     const form = document.querySelector('.bg-white form') || document.querySelector('form');
-    if (!form) { console.warn('No se encontró el formulario'); return; }
+    if (!form) return;
 
-    // Inserta el select de periodicidad si no existe
     if (!document.getElementById('periodicidad')) {
-      const duracionCol = document.querySelector('#frecuenciaCuotas')?.closest('.col-lg-6');
+      const duracionCol = document.querySelector('#frecuenciaCuotas')?.closest('.col-lg-6, .col-md-6, .col-12');
+
       const col = document.createElement('div');
-      col.className = 'col-lg-6';
+      col.className = 'col-12 col-md-6 col-lg-6';
       col.innerHTML = `
         <div class="form-floating">
           <select class="form-select border-0" id="periodicidad" style="background-color:#e8f5e9">
@@ -107,16 +108,22 @@
             <option value="anual">Anual (21,26%)</option>
           </select>
           <label for="periodicidad" style="color:#004d40">Periodicidad de pagos</label>
-        </div>`;
-      (duracionCol || form.querySelector('.row.g-4') || form).insertAdjacentElement('beforeend', col);
+        </div>
+      `;
+
+      if (duracionCol) {
+        // ✅ hermano inmediato: queda junto a “Tiempo del crédito”
+        duracionCol.insertAdjacentElement('afterend', col);
+      } else {
+        // respaldo
+        (form.querySelector('.row.g-4') || form).appendChild(col);
+      }
     }
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       try {
         const payload = calcularDesdeFormulario(form);
-        // log mínimo para verificar flujo
-        console.log('credito:calculado → payload', payload.resumen);
         window.dispatchEvent(new CustomEvent('credito:calculado', { detail: payload }));
         document.getElementById('amort-body')?.closest('.container')?.scrollIntoView({ behavior: 'smooth' });
       } catch (err) {
