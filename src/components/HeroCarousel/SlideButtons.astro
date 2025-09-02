@@ -11,10 +11,12 @@ const { btn1, btn2, idx } = Astro.props;
     {btn1.icon && <i class={btn1.icon + " me-2"}></i>}
     {btn1.label}
   </a>
-  <a
-    class="btn btn-primary rounded-pill py-3 px-4 px-md-5 ms-2"
-    href={btn2.href}
-  >
-    {btn2.label}
-  </a>
+
+{
+  btn2 && (
+    <a class="btn btn-primary rounded-pill py-3 px-4 px-md-5 ms-2" href={btn2.href}>
+      {btn2.label}
+    </a>
+  )}
+
 </div>
