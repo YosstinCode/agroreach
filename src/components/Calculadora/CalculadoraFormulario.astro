@@ -1,133 +1,218 @@
 ---
 ---
-
 <div class="bg-white p-5 rounded shadow wow fadeInUp" data-wow-delay="0.2s">
-
-    <h4 class="text-success mb-4">Ingresa tus Datos</h4>
+  <h4 class="text-success mb-4">Ingresa tus Datos</h4>
   <form>
     <div class="row g-4">
-      <div class="col-lg-6">
+      <!-- Fila 1 -->
+      <div class="col-12 col-md-6">
         <div class="form-floating">
-          <input type="text" class="form-control border-0" id="nombre" placeholder="Nombre" style="background-color: #e8f5e9" />
-          <label for="nombre" style="color: #004d40">Nombre</label>
+          <input type="text" class="form-control border-0" id="nombre" placeholder="Nombre" style="background-color:#e8f5e9" />
+          <label for="nombre" style="color:#004d40">Nombre</label>
         </div>
       </div>
-      <div class="col-lg-6">
+      <div class="col-12 col-md-6">
         <div class="form-floating">
-          <input type="text" class="form-control border-0" id="apellido" placeholder="Apellido" style="background-color: #e8f5e9" />
-          <label for="apellido" style="color: #004d40">Apellido</label>
+          <input type="text" class="form-control border-0" id="apellido" placeholder="Apellido" style="background-color:#e8f5e9" />
+          <label for="apellido" style="color:#004d40">Apellido</label>
         </div>
       </div>
-      <div class="col-lg-6">
+
+      <!-- Fila 2 -->
+      <div class="col-12 col-md-6">
         <div class="form-floating">
-          <select class="form-select border-0" id="tipoDocumento" style="background-color: #e8f5e9">
+          <select class="form-select border-0" id="tipoDocumento" style="background-color:#e8f5e9">
             <option value="CC">Cédula de Ciudadanía</option>
             <option value="CE">Cédula de Extranjería</option>
             <option value="NIT">NIT</option>
-          
           </select>
-          <label for="tipoDocumento" style="color: #004d40">Tipo de Documento</label>
+          <label for="tipoDocumento" style="color:#004d40">Tipo de Documento</label>
         </div>
       </div>
-      <div class="col-lg-6">
+      <div class="col-12 col-md-6">
         <div class="form-floating">
-          <input type="text" class="form-control border-0" id="cedula" placeholder="Número de Documento" style="background-color: #e8f5e9" />
-          <label for="cedula" style="color: #004d40">Número de Documento</label>
+          <input type="text" class="form-control border-0" id="cedula" placeholder="Número de Documento" style="background-color:#e8f5e9" />
+          <label for="cedula" style="color:#004d40">Número de Documento</label>
         </div>
       </div>
-      <div class="col-lg-6">
+
+      <!-- Fila 3 -->
+      <div class="col-12 col-md-6">
         <div class="form-floating">
-          <input type="email" class="form-control border-0" id="correo" placeholder="Correo Electrónico" style="background-color: #e8f5e9" />
-          <label for="correo" style="color: #004d40">Correo Electrónico</label>
+          <input type="email" class="form-control border-0" id="correo" placeholder="Correo Electrónico" style="background-color:#e8f5e9" />
+          <label for="correo" style="color:#004d40">Correo Electrónico</label>
         </div>
       </div>
-      <div class="col-lg-6">
+      <div class="col-12 col-md-6">
         <div class="form-floating">
-          <input type="tel" class="form-control border-0" id="telefono" placeholder="Teléfono" style="background-color: #e8f5e9" />
-          <label for="telefono" style="color: #004d40">Teléfono</label>
+          <input type="tel" class="form-control border-0" id="telefono" placeholder="Teléfono" style="background-color:#e8f5e9" />
+          <label for="telefono" style="color:#004d40">Teléfono</label>
         </div>
       </div>
-      <div class="col-lg-6">
+
+      <!-- Fila 4: Fecha de nacimiento / Sexo -->
+      <div class="col-12 col-md-6">
         <div class="form-floating">
-          <input type="number" class="form-control border-0" id="ingresos" placeholder="Ingresos Mensuales" style="background-color: #e8f5e9" />
-          <label for="ingresos" style="color: #004d40">Ingresos Mensuales</label>
+          <input type="date" class="form-control border-0" id="fechaNacimiento" placeholder="Fecha de nacimiento" style="background-color:#e8f5e9" />
+          <label for="fechaNacimiento" style="color:#004d40">Fecha de nacimiento</label>
         </div>
       </div>
-      <div class="col-lg-6">
+      <div class="col-12 col-md-6">
         <div class="form-floating">
-          <input type="number" class="form-control border-0" id="monto" placeholder="Monto Solicitado" style="background-color: #e8f5e9" />
-          <label for="monto" style="color: #004d40">Monto Solicitado</label>
+          <select class="form-select border-0" id="sexo" style="background-color:#e8f5e9">
+            <option value="">Selecciona…</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Femenino">Femenino</option>
+            <option value="Otro">Otro</option>
+          </select>
+          <label for="sexo" style="color:#004d40">Sexo</label>
         </div>
       </div>
-      <div class="col-lg-6">
+
+      <!-- Fila 5: Ingresos / Monto (con máscara COP) -->
+      <div class="col-12 col-md-6">
         <div class="form-floating">
-          <select class="form-select border-0" id="frecuenciaCuotas" style="background-color: #e8f5e9">
+          <input type="text" class="form-control border-0" id="ingresos" placeholder="Ingresos Mensuales" style="background-color:#e8f5e9" inputmode="numeric" />
+          <label for="ingresos" style="color:#004d40">Ingresos Mensuales</label>
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="form-floating">
+          <input type="text" class="form-control border-0" id="monto" placeholder="Monto Solicitado" style="background-color:#e8f5e9" inputmode="numeric" />
+          <label for="monto" style="color:#004d40">Monto Solicitado</label>
+        </div>
+      </div>
+
+      <!-- Fila 6: Actividad económica / Banco -->
+      <div class="col-12 col-md-6">
+        <div class="form-floating">
+          <select class="form-select border-0" id="actividadEconomica" style="background-color:#e8f5e9">
+            <option value="">Selecciona actividad…</option>
+            <option value="Ganaderia">Ganadería</option>
+            <option value="Avicola">Avícola (Gallinas)</option>
+            <option value="Piscicultura">Piscicultura</option>
+            <option value="Agricola">Agrícola (sembrar y recolectar)</option>
+            <option value="Porcicultura">Porcicultura</option>
+            <option value="Caficultor">Caficultor</option>
+          </select>
+          <label for="actividadEconomica" style="color:#004d40">Actividad económica</label>
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="form-floating">
+          <select class="form-select border-0" id="banco" style="background-color:#e8f5e9">
+            <option value="">Selecciona banco…</option>
+            <!-- Las opciones se pueden poblar desde tu JS core si así lo prefieres -->
+          </select>
+          <label for="banco" style="color:#004d40">Banco</label>
+        </div>
+      </div>
+
+      <!-- Fila 7: Tiempo / Periodicidad -->
+      <div class="col-12 col-md-6">
+        <div class="form-floating">
+          <select class="form-select border-0" id="frecuenciaCuotas" style="background-color:#e8f5e9">
             <option value="12">1 Año (12 meses)</option>
             <option value="24">2 Años (24 meses)</option>
             <option value="36">3 Años (36 meses)</option>
             <option value="48">4 Años (48 meses)</option>
             <option value="60">5 Años (60 meses)</option>
           </select>
-          <label for="frecuenciaCuotas" style="color: #004d40">Tiempo del credito</label>
+          <label for="frecuenciaCuotas" style="color:#004d40">Tiempo del crédito</label>
         </div>
       </div>
+      <div class="col-12 col-md-6">
+        <div class="form-floating">
+          <select class="form-select border-0" id="periodicidad" style="background-color:#e8f5e9">
+            <option value="">Selecciona periodicidad…</option>
+            <!-- Si tu JS core ajusta tasas por banco, puedes llenar aquí dinámicamente -->
+          </select>
+          <label for="periodicidad" style="color:#004d40">Periodicidad de pagos</label>
+        </div>
+      </div>
+
+      <!-- Comentarios -->
       <div class="col-12">
         <div class="form-floating">
-          <textarea class="form-control border-0" placeholder="Comentarios" id="comentarios" style="height: 120px; background-color: #e8f5e9"></textarea>
-          <label for="comentarios" style="color: #004d40">Comentarios</label>
+          <textarea class="form-control border-0" placeholder="Comentarios" id="comentarios" style="height:120px;background-color:#e8f5e9"></textarea>
+          <label for="comentarios" style="color:#004d40">Comentarios</label>
         </div>
       </div>
+
       <div class="col-12">
-        <button class="btn btn-success w-100 py-3" style="background-color: #00d084; color: #fff">
+        <button class="btn btn-success w-100 py-3" style="background-color:#00d084;color:#fff">
           Calcular Crédito
         </button>
       </div>
     </div>
   </form>
 </div>
-<script type="module">
-  import { calcularDesdeFormulario } from '/js/credito-core.js';
 
-  window.addEventListener('DOMContentLoaded', () => {
-    const form = document.querySelector('.bg-white form') || document.querySelector('form');
+<script type="module">
+  import { calcularDesdeFormulario } from "/js/credito-core.js";
+
+  // ===== Helpers máscara COP =====
+  const unformatCOP = (s) => (s || '').toString().replace(/\D+/g, '');
+  const formatCOP   = (digits) => {
+    const d = unformatCOP(digits);
+    if (!d) return '';
+    return '$' + d.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  };
+
+  window.addEventListener("DOMContentLoaded", () => {
+    const form = document.querySelector(".bg-white form") || document.querySelector("form");
     if (!form) return;
 
-    if (!document.getElementById('periodicidad')) {
-      const duracionCol = document.querySelector('#frecuenciaCuotas')?.closest('.col-lg-6, .col-md-6, .col-12');
+    // Aplica máscara en tiempo real a ingresos y monto
+    ['#ingresos', '#monto'].forEach(sel => {
+      const inp = form.querySelector(sel);
+      if (!inp) return;
+      inp.inputMode = 'numeric';
+      inp.autocomplete = 'off';
+      if (inp.value) inp.value = formatCOP(inp.value);
 
-      const col = document.createElement('div');
-      col.className = 'col-12 col-md-6 col-lg-6';
-      col.innerHTML = `
-        <div class="form-floating">
-          <select class="form-select border-0" id="periodicidad" style="background-color:#e8f5e9">
-            <option value="">Selecciona periodicidad…</option>
-            <option value="mensual">Mensual (1,57%)</option>
-            <option value="trimestral">Trimestral (4,77%)</option>
-            <option value="cuatrimestral">Cuatrimestral (6,41%)</option>
-            <option value="semestral">Semestral (9,77%)</option>
-            <option value="anual">Anual (21,26%)</option>
-          </select>
-          <label for="periodicidad" style="color:#004d40">Periodicidad de pagos</label>
-        </div>
-      `;
+      const placeCaretEnd = (el) => {
+        const L = el.value.length;
+        requestAnimationFrame(() => el.setSelectionRange(L, L));
+      };
 
-      if (duracionCol) {
-        // ✅ hermano inmediato: queda junto a “Tiempo del crédito”
-        duracionCol.insertAdjacentElement('afterend', col);
-      } else {
-        // respaldo
-        (form.querySelector('.row.g-4') || form).appendChild(col);
-      }
-    }
+      inp.addEventListener('input', () => {
+        const raw = unformatCOP(inp.value);
+        inp.dataset.raw = raw;           // guardo dígitos puros
+        inp.value = formatCOP(raw);      // re-formateo
+        placeCaretEnd(inp);
+      });
+      inp.addEventListener('blur',  () => inp.value = formatCOP(inp.dataset.raw || inp.value));
+      inp.addEventListener('focus', () => placeCaretEnd(inp));
+    });
 
-    form.addEventListener('submit', (e) => {
+    // Submit: desformateo → cálculo → restauro
+    form.addEventListener("submit", (e) => {
       e.preventDefault();
+
+      const moneyInputs = ['#ingresos','#monto']
+        .map(sel => form.querySelector(sel))
+        .filter(Boolean);
+
+      // desformateo temporal
+      const snapshots = moneyInputs.map(inp => {
+        const prev = inp.value;
+        const raw  = inp.dataset.raw || unformatCOP(prev);
+        inp.value  = raw;
+        return { inp, prev };
+      });
+
       try {
         const payload = calcularDesdeFormulario(form);
-        window.dispatchEvent(new CustomEvent('credito:calculado', { detail: payload }));
-        document.getElementById('amort-body')?.closest('.container')?.scrollIntoView({ behavior: 'smooth' });
+
+        // restauro valores formateados
+        snapshots.forEach(({ inp, prev }) => inp.value = formatCOP(unformatCOP(prev)));
+
+        // emito evento (si tu tabla lo escucha)
+        window.dispatchEvent(new CustomEvent("credito:calculado", { detail: payload }));
       } catch (err) {
-        alert(err?.message || 'No se pudo calcular el crédito.');
+        snapshots.forEach(({ inp, prev }) => inp.value = formatCOP(unformatCOP(prev)));
+        alert(err?.message || "No se pudo calcular el crédito.");
       }
     });
   });
