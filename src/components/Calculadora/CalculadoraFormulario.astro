@@ -225,8 +225,8 @@
           numero_documento: form.cedula?.value || "",
           correo: form.correo?.value || "",
           telefono: form.telefono?.value || "",
-          ingresos_mensuales: form.ingresos?.dataset.raw || "", // Usar el valor sin formato
-          monto_solicitado: form.monto?.dataset.raw || "",
+          ingresos_mensuales: Number(form.ingresos?.dataset.raw || 0), // Usar el valor sin formato como número
+          monto_solicitado: Number(form.monto?.dataset.raw || 0),
           banco: form.banco?.value || "", // Ajusta si tienes un campo banco
           tiempo_credito_meses: Number(form.frecuenciaCuotas?.value) || 0,
           periodicidad_pagos: form.periodicidad?.value || "",
@@ -238,8 +238,56 @@
 
         console.log("SolicitudCreate payload:", JSON.stringify(solicitud, null, 2));
 
-        window.dispatchEvent(new CustomEvent('credito:calculado', { detail: solicitud }));
-        document.getElementById('amort-body')?.closest('.container')?.scrollIntoView({ behavior: 'smooth' });
+        // Realiza la petición POST
+        fetch('http://localhost:3000/api/solicitudes', {
+          method: 'POST',
+          headers: {
+            'accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(solicitud)
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Error al guardar la solicitud. Código: ' + response.status);
+          }
+          return response.json();
+        })
+        .then(data => {
+          window.dispatchEvent(new CustomEvent('credito:calculado', { detail: solicitud }));
+          document.getElementById('amort-body')?.closest('.container')?.scrollIntoView({ behavior: 'smooth' });
+          mostrarPopup('¡Crédito calculado y guardado exitosamente!', 'success');
+          console.log('Respuesta del servidor:', data);
+        })
+        .catch(error => {
+          mostrarPopup('Error en la solicitud: ' + error.message, 'error');
+          console.error('Error en la solicitud:', error);
+        });
+  // Popup para mostrar mensajes de éxito o error
+  function mostrarPopup(mensaje, tipo = 'success') {
+    let popup = document.getElementById('popup-mensaje');
+    if (!popup) {
+      popup = document.createElement('div');
+      popup.id = 'popup-mensaje';
+      popup.style.position = 'fixed';
+      popup.style.top = '30px';
+      popup.style.left = '50%';
+      popup.style.transform = 'translateX(-50%)';
+      popup.style.zIndex = '9999';
+      popup.style.padding = '18px 32px';
+      popup.style.borderRadius = '8px';
+      popup.style.fontSize = '1.1rem';
+      popup.style.boxShadow = '0 2px 12px rgba(0,0,0,0.15)';
+      popup.style.color = '#fff';
+      document.body.appendChild(popup);
+    }
+    popup.textContent = mensaje;
+    popup.style.background = tipo === 'success' ? '#00d084' : '#d32f2f';
+    popup.style.display = 'block';
+    setTimeout(() => {
+      popup.style.display = 'none';
+    }, 3500);
+  }
       } catch (err) {
         alert(err?.message || 'No se pudo calcular el crédito.');
       }
