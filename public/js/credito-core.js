@@ -108,6 +108,10 @@ export function calcularDesdeFormulario(form) {
     mesesTotal: parseInt(q('#frecuenciaCuotas')?.value || '0', 10),
     comentarios: (q('#comentarios')?.value || '').trim(),
     periodicidad: q('#periodicidad')?.value || '',
+    fechaNacimiento: q('#fechaNacimiento')?.value || '', //Nuevo
+    sexo: q('#sexo')?.value || '', //Nuevo
+    actividadEconomica: q('#actividadEconomica')?.value || '', //Nuevo
+    
   };
 
   if (!data.monto || data.monto <= 0) throw new Error('Ingresa un monto válido.');
@@ -136,6 +140,9 @@ export function calcularDesdeFormulario(form) {
       tipoDocumento: data.tipoDocumento, documento: data.cedula,
       correo: data.correo, telefono: data.telefono,
       ingresos: data.ingresos, comentarios: data.comentarios,
+      fechaNacimiento: data.fechaNacimiento,
+      sexo: data.sexo,
+      actividadEconomica: data.actividadEconomica,
     },
     banco: { id: data.bancoId, nombre: banco.nombre, producto: banco.producto },
     resumen: {
