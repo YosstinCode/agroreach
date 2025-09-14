@@ -10,12 +10,14 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
+    "@supabase/supabase-js": "^2.57.4",
     "@types/bootstrap": "^5.2.10",
     "astro": "^5.7.13",
     "astro-bootstrap": "^0.7.2",
     "bootstrap": "^5.3.6"
   },
   "devDependencies": {
+    "@astrojs/vercel": "^8.2.7",
     "sass-embedded": "^1.89.0"
   }
 }

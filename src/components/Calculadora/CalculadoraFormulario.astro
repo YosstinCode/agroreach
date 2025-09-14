@@ -318,22 +318,31 @@
           comentarios: form.comentarios?.value || ""
         };
 
-        // 4.3 POST (opcional: puedes comentar si no lo necesitas ahora)
-        const capacidadEndeudamiento = solicitud.ingresos_mensuales * 0.3;
 
-        fetch('https://backend-agroreach.vercel.app/api/solicitudes', {
-          method: 'POST',
-          headers: { 'accept': 'application/json', 'Content-Type': 'application/json' },
-          body: JSON.stringify(solicitud)
-        })
-        .then(r => (r.ok ? r.json() : Promise.reject(new Error('Error al guardar. Código: ' + r.status))))
-        .then(() => {
-          mostrarPopup(`¡Crédito calculado y guardado exitosamente!<br>Capacidad máxima de endeudamiento: ${formatCOP(capacidadEndeudamiento)}`, 'success');
-        })
-        .catch(err => {
+        // 4.3 POST local a /api/solicitudes-credito
+        try {
+          const res = await fetch('/api/solicitudes-credito', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(solicitud),
+          });
+
+          const out = await res.json();
+
+          if (!res.ok || !out.ok) {
+            mostrarPopup(out?.message || 'Error al guardar', 'error');
+            console.error('Insert error:', out?.details || out);
+            return;
+          }
+
+          mostrarPopup('¡Solicitud guardada exitosamente!', 'success');
+          console.log('Fila insertada:', out.data);
+          form.reset();
+          actualizarInfo();
+        } catch (err) {
+          mostrarPopup('Error de red al guardar', 'error');
           console.error(err);
-          mostrarPopup('Error en la solicitud: ' + err.message, 'error');
-        });
+        }
 
       } catch (err) {
         alert(err?.message || 'No se pudo calcular el crédito.');
