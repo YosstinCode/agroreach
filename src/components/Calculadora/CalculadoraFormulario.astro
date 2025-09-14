@@ -77,8 +77,21 @@
         </div>
       </div>
       <div class="col-12">
+        <div id="info-endeudamiento" style="background:#e8f5e9;padding:16px;border-radius:8px;color:#004d40;font-size:1rem;">
+          <strong>Capacidad máxima de endeudamiento:</strong> <span id="capacidad-max">$0</span><br>
+          <strong>Monto máximo recomendado:</strong> <span id="monto-max">$0</span><br>
+          <strong>Cuota estimada:</strong> <span id="cuota-estimada">$0</span><br>
+          <strong>Ingreso mínimo recomendado:</strong> <span id="ingreso-min">$0</span>
+        </div>
+      </div>
+      <div class="col-12">
         <button class="btn btn-success w-100 py-3" style="background-color: #00d084; color: #fff">
           Calcular Crédito
+        </button>
+      </div>
+      <div class="col-12 mt-2">
+        <button type="button" id="exportarExcel" class="btn btn-outline-success w-100 py-3">
+          Exportar a Excel
         </button>
       </div>
     </div>
@@ -88,7 +101,9 @@
 <script type="module">
   import { calcularDesdeFormulario } from '/js/credito-core.js';
 
-  // Utilidades para máscara COP
+  // =========================
+  // Utilidades máscara COP
+  // =========================
   const unformatCOP = (s) => (s || '').toString().replace(/\D+/g, '');
   const formatCOP   = (digits) => {
     const d = unformatCOP(digits);
@@ -96,14 +111,33 @@
     return '$' + d.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   };
 
+  // =========================
+  // Cargar SheetJS una sola vez
+  // =========================
+  const loadSheetJS = () =>
+    new Promise((resolve) => {
+      if (window.XLSX) return resolve();
+      const sc = document.createElement('script');
+      sc.src = 'https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js';
+      sc.onload = resolve;
+      document.head.appendChild(sc);
+    });
+
+  // Guardamos el último cálculo para exportar
+  window.__ultimoCredito = null;
+
   window.addEventListener('DOMContentLoaded', () => {
     const form = document.querySelector('.bg-white form') || document.querySelector('form');
     if (!form) return;
 
-    // === A) Agregar campos nuevos (sin tocar lo demás) ===
-    // A.1 Fecha de nacimiento + Sexo (después de Teléfono)
+    // =========================
+    // 1) Insertar campos NUEVOS
+    // =========================
+
+    // 1.1 Fecha de nacimiento + Sexo (después de Teléfono)
     if (!document.getElementById('fechaNacimiento') && !document.getElementById('sexo')) {
       const telCol = form.querySelector('#telefono')?.closest('.col-lg-6, .col-md-6, .col-12');
+
       const fechaCol = document.createElement('div');
       fechaCol.className = 'col-lg-6';
       fechaCol.innerHTML = `
@@ -112,6 +146,7 @@
                  placeholder="Fecha de nacimiento" style="background-color:#e8f5e9" />
           <label for="fechaNacimiento" style="color:#004d40">Fecha de nacimiento</label>
         </div>`;
+
       const sexoCol = document.createElement('div');
       sexoCol.className = 'col-lg-6';
       sexoCol.innerHTML = `
@@ -124,6 +159,7 @@
           </select>
           <label for="sexo" style="color:#004d40">Sexo</label>
         </div>`;
+
       if (telCol) {
         telCol.insertAdjacentElement('afterend', fechaCol);
         fechaCol.insertAdjacentElement('afterend', sexoCol);
@@ -134,7 +170,7 @@
       }
     }
 
-    // A.2 Actividad económica (después de Monto)
+    // 1.2 Actividad económica (después de Monto)
     if (!document.getElementById('actividadEconomica')) {
       const montoCol = form.querySelector('#monto')?.closest('.col-lg-6, .col-md-6, .col-12');
       const actCol = document.createElement('div');
@@ -159,12 +195,13 @@
       }
     }
 
-    // === B) Máscara COP en #ingresos y #monto (solo UI, tu parseNumberSafe los lee bien) ===
+    // =========================
+    // 2) Máscara COP en Ingresos/Monto (solo UI)
+    // =========================
     ['#ingresos', '#monto'].forEach((sel) => {
       const inp = form.querySelector(sel);
       if (!inp) return;
-      // permitimos $ y puntos → cambiamos a text
-      inp.type = 'text';
+      inp.type = 'text';    // permite $ y puntos
       inp.inputMode = 'numeric';
       inp.autocomplete = 'off';
       if (inp.value) inp.value = formatCOP(inp.value);
@@ -176,22 +213,19 @@
 
       inp.addEventListener('input', () => {
         const raw = unformatCOP(inp.value);
-        inp.dataset.raw = raw;            // opcional, por si lo quieres leer crudo
+        inp.dataset.raw = raw;
         inp.value = formatCOP(raw);
         placeEnd(inp);
       });
-
-      inp.addEventListener('blur', () => {
-        inp.value = formatCOP(inp.dataset.raw || inp.value);
-      });
-
+      inp.addEventListener('blur', () => (inp.value = formatCOP(inp.dataset.raw || inp.value)));
       inp.addEventListener('focus', () => placeEnd(inp));
     });
 
-    // === C) Tu código existente para PERIODICIDAD y submit (SIN CAMBIOS) ===
+    // =========================
+    // 3) Periodicidad (si falta)
+    // =========================
     if (!document.getElementById('periodicidad')) {
       const duracionCol = document.querySelector('#frecuenciaCuotas')?.closest('.col-lg-6, .col-md-6, .col-12');
-
       const col = document.createElement('div');
       col.className = 'col-12 col-md-6 col-lg-6';
       col.innerHTML = `
@@ -205,19 +239,67 @@
             <option value="anual">Anual (21,26%)</option>
           </select>
           <label for="periodicidad" style="color:#004d40">Periodicidad de pagos</label>
-        </div>
-      `;
-      if (duracionCol) {
-        duracionCol.insertAdjacentElement('afterend', col);
-      } else {
-        (form.querySelector('.row.g-4') || form).appendChild(col);
-      }
+        </div>`;
+      if (duracionCol) duracionCol.insertAdjacentElement('afterend', col);
+      else (form.querySelector('.row.g-4') || form).appendChild(col);
     }
 
-    form.addEventListener('submit', (e) => {
+    // =========================
+    // 4) Cálculo + POST + guardar payload para exportar
+    // =========================
+
+    // Popup reutilizable
+    function mostrarPopup(mensaje, tipo = 'success') {
+      let popup = document.getElementById('popup-mensaje');
+      if (!popup) {
+        popup = document.createElement('div');
+        popup.id = 'popup-mensaje';
+        popup.style.position = 'fixed';
+        popup.style.top = '30px';
+        popup.style.left = '50%';
+        popup.style.transform = 'translateX(-50%)';
+        popup.style.zIndex = '9999';
+        popup.style.padding = '18px 32px';
+        popup.style.borderRadius = '8px';
+        popup.style.fontSize = '1.1rem';
+        popup.style.boxShadow = '0 2px 12px rgba(0,0,0,0.15)';
+        popup.style.color = '#fff';
+        document.body.appendChild(popup);
+      }
+      popup.innerHTML = mensaje;
+      popup.style.background = tipo === 'success' ? '#00d084' : '#d32f2f';
+      popup.style.display = 'block';
+      setTimeout(() => (popup.style.display = 'none'), 3500);
+    }
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       try {
-        // Extraer manualmente todos los valores del formulario
+        // 4.1 Calcula con tu core (incluye amortización)
+        const payload = calcularDesdeFormulario(form); // <- puede lanzar si faltan campos
+        window.__ultimoCredito = payload;              // guardamos para exportación
+
+        // Visualiza solo los datos del solicitante en consola
+        console.log("Datos completos del cálculo:", JSON.stringify({ solicitante: payload.solicitante }, null, 2));
+
+        // Validación de capacidad de endeudamiento
+        const ingresos = Number(form.ingresos?.dataset.raw || unformatCOP(form.ingresos?.value));
+        const cuotaCalculada = payload?.resumen?.cuota || 0;
+        const capacidadMaxima = ingresos * 0.3;
+
+        if (cuotaCalculada > capacidadMaxima) {
+          mostrarPopup(
+            `No es posible aprobar el crédito: la cuota (${formatCOP(cuotaCalculada)}) excede el nivel de endeudamiento permitido (${formatCOP(capacidadMaxima)}).<br>
+            Recomendamos aumentar el plazo o los ingresos mensuales.`,
+            'error'
+          );
+          return; // No continúa con el cálculo ni el guardado
+        }
+
+        window.dispatchEvent(new CustomEvent('credito:calculado', { detail: payload }));
+        document.getElementById('amort-body')?.closest('.container')?.scrollIntoView({ behavior: 'smooth' });
+
+        // 4.2 Construye el objeto para tu API (manteniendo tu estructura)
         const solicitud = {
           nombre: form.nombre?.value || "",
           apellido: form.apellido?.value || "",
@@ -225,9 +307,9 @@
           numero_documento: form.cedula?.value || "",
           correo: form.correo?.value || "",
           telefono: form.telefono?.value || "",
-          ingresos_mensuales: Number(form.ingresos?.dataset.raw || 0), // Usar el valor sin formato como número
-          monto_solicitado: Number(form.monto?.dataset.raw || 0),
-          banco: form.banco?.value || "", // Ajusta si tienes un campo banco
+          ingresos_mensuales: Number(form.ingresos?.dataset.raw || unformatCOP(form.ingresos?.value)),
+          monto_solicitado: Number(form.monto?.dataset.raw || unformatCOP(form.monto?.value)),
+          banco: form.banco?.value || payload?.banco?.id || "",
           tiempo_credito_meses: Number(form.frecuenciaCuotas?.value) || 0,
           periodicidad_pagos: form.periodicidad?.value || "",
           fecha_nacimiento: form.fechaNacimiento?.value || "",
@@ -236,61 +318,122 @@
           comentarios: form.comentarios?.value || ""
         };
 
-        console.log("SolicitudCreate payload:", JSON.stringify(solicitud, null, 2));
+        // 4.3 POST (opcional: puedes comentar si no lo necesitas ahora)
+        const capacidadEndeudamiento = solicitud.ingresos_mensuales * 0.3;
 
-        // Realiza la petición POST
         fetch('http://localhost:3000/api/solicitudes', {
           method: 'POST',
-          headers: {
-            'accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
+          headers: { 'accept': 'application/json', 'Content-Type': 'application/json' },
           body: JSON.stringify(solicitud)
         })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Error al guardar la solicitud. Código: ' + response.status);
-          }
-          return response.json();
+        .then(r => (r.ok ? r.json() : Promise.reject(new Error('Error al guardar. Código: ' + r.status))))
+        .then(() => {
+          mostrarPopup(`¡Crédito calculado y guardado exitosamente!<br>Capacidad máxima de endeudamiento: ${formatCOP(capacidadEndeudamiento)}`, 'success');
         })
-        .then(data => {
-          window.dispatchEvent(new CustomEvent('credito:calculado', { detail: solicitud }));
-          document.getElementById('amort-body')?.closest('.container')?.scrollIntoView({ behavior: 'smooth' });
-          mostrarPopup('¡Crédito calculado y guardado exitosamente!', 'success');
-          console.log('Respuesta del servidor:', data);
-        })
-        .catch(error => {
-          mostrarPopup('Error en la solicitud: ' + error.message, 'error');
-          console.error('Error en la solicitud:', error);
+        .catch(err => {
+          console.error(err);
+          mostrarPopup('Error en la solicitud: ' + err.message, 'error');
         });
-  // Popup para mostrar mensajes de éxito o error
-  function mostrarPopup(mensaje, tipo = 'success') {
-    let popup = document.getElementById('popup-mensaje');
-    if (!popup) {
-      popup = document.createElement('div');
-      popup.id = 'popup-mensaje';
-      popup.style.position = 'fixed';
-      popup.style.top = '30px';
-      popup.style.left = '50%';
-      popup.style.transform = 'translateX(-50%)';
-      popup.style.zIndex = '9999';
-      popup.style.padding = '18px 32px';
-      popup.style.borderRadius = '8px';
-      popup.style.fontSize = '1.1rem';
-      popup.style.boxShadow = '0 2px 12px rgba(0,0,0,0.15)';
-      popup.style.color = '#fff';
-      document.body.appendChild(popup);
-    }
-    popup.textContent = mensaje;
-    popup.style.background = tipo === 'success' ? '#00d084' : '#d32f2f';
-    popup.style.display = 'block';
-    setTimeout(() => {
-      popup.style.display = 'none';
-    }, 3500);
-  }
+
       } catch (err) {
         alert(err?.message || 'No se pudo calcular el crédito.');
       }
+    });
+
+    // =========================
+    // 5) Cálculos de información en vivo
+    // =========================
+    function calcularFrances(P, i, n) {
+      if (i === 0) return P / n;
+      return P * i / (1 - Math.pow(1 + i, -n));
+    }
+    function calcularMontoMax(A, i, n) {
+      if (i === 0) return A * n;
+      return A * (1 - Math.pow(1 + i, -n)) / i;
+    }
+    function actualizarInfo() {
+      const ingresos = Number(unformatCOP(form.ingresos?.value));
+      const monto = Number(unformatCOP(form.monto?.value));
+      const plazo = Number(form.frecuenciaCuotas?.value) || 12;
+      const tasa = 0.017; // 1,7% mensual fijo (informativo)
+
+      const capacidad = ingresos * 0.3;
+      const cuota = calcularFrances(monto, tasa, plazo);
+      const montoMax = calcularMontoMax(capacidad, tasa, plazo);
+      const ingresoMin = cuota / 0.3;
+
+      document.getElementById('capacidad-max').textContent = formatCOP(capacidad);
+      document.getElementById('monto-max').textContent = formatCOP(Math.round(montoMax));
+      document.getElementById('cuota-estimada').textContent = formatCOP(Math.round(cuota));
+      document.getElementById('ingreso-min').textContent = formatCOP(Math.ceil(ingresoMin));
+    }
+    ['ingresos', 'monto', 'frecuenciaCuotas'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('input', actualizarInfo);
+        el.addEventListener('blur', actualizarInfo);
+        el.addEventListener('change', actualizarInfo);
+      }
+    });
+    actualizarInfo();
+
+    // =========================
+    // 6) Exportar a Excel (Datos + Resumen + Amortización)
+    // =========================
+    document.getElementById('exportarExcel')?.addEventListener('click', async () => {
+      await loadSheetJS();
+
+      const p = window.__ultimoCredito;
+      if (!p) {
+        alert('Primero calcula tu crédito para exportarlo.');
+        return;
+      }
+
+      // Hoja 1: Datos del solicitante/selección
+      const datosAoa = [
+        ['Campo', 'Valor'],
+        ['Nombre completo', p.solicitante?.nombreCompleto || ''],
+        ['Tipo de documento', p.solicitante?.tipoDocumento || ''],
+        ['Documento', p.solicitante?.documento || ''],
+        ['Correo', p.solicitante?.correo || ''],
+        ['Teléfono', p.solicitante?.telefono || ''],
+        ['Ingresos mensuales', p.solicitante?.ingresos ?? 0],
+        ['Banco', p.banco?.nombre || ''],
+        ['Producto', p.banco?.producto || ''],
+        ['Periodicidad', p.resumen?.periodicidad || ''],
+      ];
+
+      // Hoja 2: Resumen (numérico)
+      const r = p.resumen;
+      const resumenAoa = [
+        ['Resumen', ''],
+        ['Monto del préstamo', r.monto],
+        ['Tasa por período', r.tasaPeriodo],
+        ['Meses totales', r.mesesTotal],
+        ['Meses por período', r.mesesPorPeriodo],
+        ['Número de cuotas', r.cuotas],
+        ['Cuota fija', r.cuota],
+        ['Intereses totales', r.totalInteres],
+        ['Total a pagar', r.totalPagar],
+      ];
+
+      // Hoja 3: Amortización completa
+      const amortAoa = [['Periodo','Saldo inicial','Cuota','Interés','Abono a capital','Saldo final']];
+      let saldoAnterior = r.monto;
+      // Fila 0 (estado inicial)
+      amortAoa.push([0, saldoAnterior, '', '', '', saldoAnterior]);
+      // Filas 1..n
+      p.filas.forEach((f) => {
+        amortAoa.push([f.k, saldoAnterior, f.cuota, f.interes, f.abono, f.saldo]);
+        saldoAnterior = f.saldo;
+      });
+
+      // Crear libro y exportar
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(datosAoa), 'Datos');
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(resumenAoa), 'Resumen');
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(amortAoa), 'Amortización');
+      XLSX.writeFile(wb, `solicitud_credito_${Date.now()}.xlsx`);
     });
   });
 </script>
