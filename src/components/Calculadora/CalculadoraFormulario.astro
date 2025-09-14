@@ -284,17 +284,17 @@
 
         // Validación de capacidad de endeudamiento
         const ingresos = Number(form.ingresos?.dataset.raw || unformatCOP(form.ingresos?.value));
-        const cuotaCalculada = payload?.resumen?.cuota || 0;
-        const capacidadMaxima = ingresos * 0.3;
+        // const cuotaCalculada = payload?.resumen?.cuota || 0;
+        // const capacidadMaxima = ingresos * 0.3;
 
-        if (cuotaCalculada > capacidadMaxima) {
-          mostrarPopup(
-            `No es posible aprobar el crédito: la cuota (${formatCOP(cuotaCalculada)}) excede el nivel de endeudamiento permitido (${formatCOP(capacidadMaxima)}).<br>
-            Recomendamos aumentar el plazo o los ingresos mensuales.`,
-            'error'
-          );
-          return; // No continúa con el cálculo ni el guardado
-        }
+        // if (cuotaCalculada > capacidadMaxima) {
+        //   mostrarPopup(
+        //     `No es posible aprobar el crédito: la cuota (${formatCOP(cuotaCalculada)}) excede el nivel de endeudamiento permitido (${formatCOP(capacidadMaxima)}).<br>
+        //     Recomendamos aumentar el plazo o los ingresos mensuales.`,
+        //     'error'
+        //   );
+        //   return; // No continúa con el cálculo ni el guardado
+        // }
 
         window.dispatchEvent(new CustomEvent('credito:calculado', { detail: payload }));
         document.getElementById('amort-body')?.closest('.container')?.scrollIntoView({ behavior: 'smooth' });
@@ -321,7 +321,7 @@
         // 4.3 POST (opcional: puedes comentar si no lo necesitas ahora)
         const capacidadEndeudamiento = solicitud.ingresos_mensuales * 0.3;
 
-        fetch('https://backend-agroreach.vercel.app//api/solicitudes', {
+        fetch('https://backend-agroreach.vercel.app/api/solicitudes', {
           method: 'POST',
           headers: { 'accept': 'application/json', 'Content-Type': 'application/json' },
           body: JSON.stringify(solicitud)
