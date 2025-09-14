@@ -321,7 +321,7 @@
         // 4.3 POST (opcional: puedes comentar si no lo necesitas ahora)
         const capacidadEndeudamiento = solicitud.ingresos_mensuales * 0.3;
 
-        fetch('http://localhost:3000/api/solicitudes', {
+        fetch('https://backend-agroreach.vercel.app//api/solicitudes', {
           method: 'POST',
           headers: { 'accept': 'application/json', 'Content-Type': 'application/json' },
           body: JSON.stringify(solicitud)
