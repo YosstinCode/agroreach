@@ -1,0 +1,139 @@
+---
+---
+
+<section class="container-fluid faq-section py-5" id="faq">
+  <div class="container">
+    <div class="text-center mx-auto pb-4" style="max-width:800px;">
+      <h4 class="text-primary">Significados</h4>
+      <h2 class="display-6 mb-3">Términos clave</h2>
+      <p class="mb-0">Explicamos de forma clara algunos conceptos que te ayudarán a entender mejor los créditos y su funcionamiento.</p>
+    </div>
+
+    <div class="row gy-4 justify-content-center">
+      <div class="col-lg-10">
+        <div class="card shadow-sm border-0">
+          <div class="card-body p-0">
+            <div class="accordion" id="faq-accordion">
+              <div class="accordion-item">
+                <button class="accordion-button" aria-expanded="false" aria-controls="panel-fintech" id="btn-fintech">
+                  <span>Fintech</span>
+                  <span class="chev">▾</span>
+                </button>
+                <div id="panel-fintech" class="accordion-panel" role="region" aria-labelledby="btn-fintech">
+                  <div class="p-3">
+                    Procedente de finanzas y tecnología, hace referencia a todas aquellas actividades que impliquen el empleo de la innovación y los desarrollos tecnológicos para el diseño, oferta y prestación de productos y servicios financieros.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <button class="accordion-button" aria-expanded="false" aria-controls="panel-tasa" id="btn-tasa">
+                  <span>Tasa de interés</span>
+                  <span class="chev">▾</span>
+                </button>
+                <div id="panel-tasa" class="accordion-panel" role="region" aria-labelledby="btn-tasa">
+                  <div class="p-3">
+                    Es aquel porcentaje que representa un costo por asumir un préstamo de dinero.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <button class="accordion-button" aria-expanded="false" aria-controls="panel-periodicidad" id="btn-periodicidad">
+                  <span>Periodicidad de pagos</span>
+                  <span class="chev">▾</span>
+                </button>
+                <div id="panel-periodicidad" class="accordion-panel" role="region" aria-labelledby="btn-periodicidad">
+                  <div class="p-3">
+                    Tiempo en el cual se van a realizar los pagos; pueden ser meses, trimestres o semestres, según el acuerdo y el producto.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq-section { background: linear-gradient(180deg, #fff 0%, #f7fbf8 100%); }
+  .faq-section .card { background: transparent; }
+  .accordion-item { border-bottom: 1px solid #eef6ef; }
+  .accordion-button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    background: #fff;
+    border: 0;
+    font-size: 1.05rem;
+    color: #004d40;
+    cursor: pointer;
+  }
+  .accordion-button:focus { outline: 2px solid rgba(0,77,64,0.15); }
+  .accordion-button .chev { font-size: 0.9rem; color: #6b8a76; margin-left: 1rem; }
+  .accordion-panel { height: 0; overflow: hidden; transition: height 220ms ease; background: #fff; }
+  .accordion-panel .p-3 { color: #556b5f; }
+  .accordion-button[aria-expanded="true"] .chev { transform: rotate(180deg); }
+
+  @media (max-width: 768px) {
+    .faq-section .display-6 { font-size: 1.5rem; }
+  }
+</style>
+
+<script>
+  // Accordion behavior: one open at a time + smooth height animation
+  (function () {
+    const root = document.getElementById('faq-accordion');
+    if (!root) return;
+
+    const items = Array.from(root.querySelectorAll('.accordion-item')) as HTMLElement[];
+
+    function closePanel(panel: HTMLElement) {
+      panel.style.height = panel.scrollHeight + 'px';
+      requestAnimationFrame(() => {
+        panel.style.height = '0px';
+      });
+      const btn = root!.querySelector(`[aria-controls="${panel.id}"]`) as HTMLElement | null;
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+    }
+
+    function openPanel(panel: HTMLElement) {
+      // set to scrollHeight to trigger transition
+      panel.style.height = panel.scrollHeight + 'px';
+      const btn = root!.querySelector(`[aria-controls="${panel.id}"]`) as HTMLElement | null;
+      if (btn) btn.setAttribute('aria-expanded', 'true');
+      // after transition, remove fixed height to allow responsive content
+      const onEnd = () => { panel.style.height = 'auto'; panel.removeEventListener('transitionend', onEnd); };
+      panel.addEventListener('transitionend', onEnd);
+    }
+
+    items.forEach((it) => {
+      const btn = it.querySelector('.accordion-button') as HTMLButtonElement | null;
+      const panel = it.querySelector('.accordion-panel') as HTMLElement | null;
+      if (!btn || !panel) return;
+
+      btn.addEventListener('click', () => {
+        const expanded = btn.getAttribute('aria-expanded') === 'true';
+        // close all other panels
+        items.forEach((x) => {
+          const p = x.querySelector('.accordion-panel') as HTMLElement | null;
+          if (p && p !== panel) closePanel(p);
+        });
+        if (expanded) closePanel(panel);
+        else openPanel(panel);
+      });
+
+      // keyboard support
+      btn.addEventListener('keydown', (ev: KeyboardEvent) => {
+        if (ev.key === 'ArrowDown') { ev.preventDefault(); const next = it.nextElementSibling?.querySelector('.accordion-button') as HTMLElement | null; if (next) next.focus(); }
+        if (ev.key === 'ArrowUp') { ev.preventDefault(); const prev = it.previousElementSibling?.querySelector('.accordion-button') as HTMLElement | null; if (prev) prev.focus(); }
+        if (ev.key === 'Home') { ev.preventDefault(); const f = items[0].querySelector('.accordion-button') as HTMLElement | null; if (f) f.focus(); }
+        if (ev.key === 'End') { ev.preventDefault(); const l = items[items.length-1].querySelector('.accordion-button') as HTMLElement | null; if (l) l.focus(); }
+      });
+    });
+  })();
+</script>
