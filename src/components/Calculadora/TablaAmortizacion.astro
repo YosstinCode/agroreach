@@ -1,8 +1,16 @@
+---
+// TablaAmortizacion.astro (versión completa con botón "Exportar a PDF")
+---
 <div class="container wow fadeInUp" style="margin-top: 4rem;" data-wow-delay="0.3s" id="tabla-credito">
-  <div class="text-center mb-4">
-    <h4 class="text-success">Tabla de Amortización</h4>
-    <h1 class="display-5 mb-3" style="color: #004d40;">Detalle de pagos de tu crédito</h1>
-    <p class="mb-0" style="color: #333;">Consulta el desglose de cada cuota y cómo disminuye tu saldo mes a mes.</p>
+  <div class="d-flex flex-wrap align-items-center justify-content-between mb-3 gap-2">
+    <div class="text-center text-lg-start">
+      <h4 class="text-success mb-1">Tabla de Amortización</h4>
+      <h1 class="display-6 mb-0" style="color:#004d40;">Detalle de pagos de tu crédito</h1>
+      <p class="mb-0 small" style="color:#333;">Consulta el desglose de cada cuota y cómo disminuye tu saldo mes a mes.</p>
+    </div>
+    <button id="exportarPDF" type="button" class="btn btn-outline-success px-4 py-2" title="Exportar amortización a PDF">
+      Exportar a PDF
+    </button>
   </div>
 
   <!-- Resumen (IDs obligatorios) -->
@@ -46,8 +54,8 @@
   <!-- Detalle -->
   <div class="table-responsive">
     <table class="table table-bordered align-middle text-center shadow-sm" style="background:#fff;">
-      <thead style="background: #00d084;">
-        <tr style="color: #fff;">
+      <thead style="background:#00d084;">
+        <tr style="color:#fff;">
           <th>Periodo</th>
           <th>Saldo inicial</th>
           <th>Cuota Fija</th>
@@ -66,20 +74,17 @@
 <script type="module">
   import { BANCOS, PERIODICIDADES, fmtPct, fmtCOP, calcularDesdeFormulario } from '/js/credito-core.js';
 
-  const cap = s => s ? s[0].toUpperCase()+s.slice(1) : '';
+  const cap = s => s ? s[0].toUpperCase() + s.slice(1) : '';
 
+  // =============== PINTADO DE TABLA (igual que antes) ===============
   window.addEventListener('DOMContentLoaded', () => {
     const form = document.querySelector('.bg-white form') || document.querySelector('form');
     if (!form) return;
 
-    // 1) Localizo "Tiempo del crédito"
     const duracionCol = form.querySelector('#frecuenciaCuotas')?.closest('.col-lg-6, .col-md-6, .col-12');
-
-    // Normalizo clases para armar 3 columnas: Banco / Tiempo / Periodicidad
     const setCols = el => { el.classList.remove('col-lg-6'); el.classList.add('col-12','col-md-6','col-lg-4'); };
     if (duracionCol) setCols(duracionCol);
 
-    // 2) Inserto <select id="banco"> ANTES de "Tiempo del crédito"
     if (!document.getElementById('banco')) {
       const bancosCol = document.createElement('div');
       bancosCol.className = 'col-12 col-md-6 col-lg-4';
@@ -97,7 +102,6 @@
       else (form.querySelector('.row.g-4') || form).appendChild(bancosCol);
     }
 
-    // 3) Inserto <select id="periodicidad"> DESPUÉS de "Tiempo del crédito"
     let periCol = document.getElementById('periodicidad')?.closest('.col-12, .col-md-6, .col-lg-6, .col-lg-4');
     if (!periCol) {
       periCol = document.createElement('div');
@@ -118,20 +122,18 @@
     const selBanco = form.querySelector('#banco');
     const selPeri  = form.querySelector('#periodicidad');
 
-    // 4) Al cambiar de banco → refresco opciones de periodicidad con el % del banco
     function refreshPeriodicidades() {
       const banco = BANCOS[selBanco.value];
       selPeri.innerHTML = `<option value="">Selecciona periodicidad…</option>` +
         PERIODICIDADES.map(p => {
           const t = banco?.tasas?.[p];
-          return `<option value="${p}" ${typeof t==='number'?'':'disabled'}>
+          return `<option value="${p}" ${typeof t==='number' ? '' : 'disabled'}>
                     ${p.charAt(0).toUpperCase()+p.slice(1)} ${typeof t==='number' ? '('+fmtPct(t)+')' : '(N/D)'}
                   </option>`;
         }).join('');
     }
-    selBanco.addEventListener('change', refreshPeriodicidades);
+    selBanco?.addEventListener('change', refreshPeriodicidades);
 
-    // 5) Submit → calcular → emitir evento para la tabla
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       try {
@@ -143,7 +145,6 @@
       }
     });
 
-    // 6) Escuchar y pintar la tabla
     window.addEventListener('credito:calculado', ({ detail }) => {
       const tBanco = document.getElementById('t-banco');
       const tProducto = document.getElementById('t-producto');
@@ -158,7 +159,6 @@
 
       const { banco, resumen, filas } = detail;
 
-      // Resumen
       tBanco.textContent = banco?.nombre ?? '—';
       tProducto.textContent = banco?.producto || '—';
       tMonto.textContent = fmtCOP(resumen.monto);
@@ -167,7 +167,6 @@
       tFrecuencia.textContent = cap(resumen.periodicidad);
       tCuota.textContent = fmtCOP(resumen.cuota);
 
-      // Cuerpo de la tabla
       let rows = `
         <tr style="background:#f9f9f9;">
           <td>0</td>
@@ -191,5 +190,153 @@
       });
       body.innerHTML = rows;
     });
+  });
+
+  // =============== EXPORTAR A PDF (tabla + resumen) ===============
+  // Carga perezosa de dependencias (sin instalar nada)
+  const loadJsPDF = () => new Promise((resolve) => {
+    if (window.jspdf?.jsPDF) return resolve();
+    const sc = document.createElement('script');
+    sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+    sc.referrerPolicy = 'no-referrer';
+    sc.onload = resolve;
+    document.head.appendChild(sc);
+  });
+  const loadHtml2Canvas = () => new Promise((resolve) => {
+    if (window.html2canvas) return resolve();
+    const sc = document.createElement('script');
+    sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    sc.referrerPolicy = 'no-referrer';
+    sc.onload = resolve;
+    document.head.appendChild(sc);
+  });
+
+  async function generatePDFAmortizacion() {
+    await loadJsPDF();
+    await loadHtml2Canvas();
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('p', 'mm', 'a4');
+
+    // Métricas página
+    const pageW = 210, pageH = 297;
+    const margin = 12;
+    const contentW = pageW - margin * 2;
+    const headerH = 18;  // espacio reservado para encabezado
+    const footerH = 10;  // espacio para pie de página
+    const innerH = pageH - margin * 2 - headerH - footerH;
+
+    // Nodo a exportar
+    const root = document.getElementById('tabla-credito');
+    if (!root) {
+      alert('No encontré la tabla de amortización.');
+      return;
+    }
+
+    // Canvas de la sección
+    const canvas = await window.html2canvas(root, {
+      scale: 2,
+      backgroundColor: '#ffffff',
+      useCORS: true
+    });
+
+    // Datos de encabezado: tomados del DOM
+    const banco       = document.getElementById('t-banco')?.textContent?.trim() || '—';
+    const producto    = document.getElementById('t-producto')?.textContent?.trim() || '—';
+    const monto       = document.getElementById('t-monto')?.textContent?.trim() || '—';
+    const tasa        = document.getElementById('t-tasa')?.textContent?.trim() || '—';
+    const frecuencia  = document.getElementById('t-frecuencia')?.textContent?.trim() || '—';
+    const cuotaFija   = document.getElementById('t-cuota')?.textContent?.trim() || '—';
+
+    // Factor de escala imagen
+    const scale = contentW / canvas.width;
+    const sliceHeightSrc = Math.floor(innerH / scale); // alto en px de la fuente (canvas) para cubrir 1 página
+
+    let page = 1;
+    let ySrc = 0;
+
+    function drawHeader() {
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(12);
+      pdf.setTextColor(0, 77, 64);
+      pdf.text('Tabla de Amortización', margin, margin + 6);
+
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(9);
+      pdf.setTextColor(33, 37, 41);
+      const hY = margin + 12;
+      const meta = [
+        `Banco: ${banco}`,
+        `Producto: ${producto}`,
+        `Monto: ${monto}`,
+        `Tasa/Período: ${tasa}`,
+        `Frecuencia: ${frecuencia}`,
+        `Cuota: ${cuotaFija}`
+      ];
+      // dos columnas de metadatos
+      const colX1 = margin, colX2 = margin + (contentW / 2) + 4;
+      meta.slice(0, 3).forEach((t, i) => pdf.text(t, colX1, hY + i * 5));
+      meta.slice(3).forEach((t, i) => pdf.text(t, colX2, hY + i * 5));
+
+      // línea separadora
+      pdf.setDrawColor(230, 230, 230);
+      pdf.line(margin, margin + headerH, pageW - margin, margin + headerH);
+    }
+
+    function drawFooter() {
+      pdf.setFont('helvetica', 'italic');
+      pdf.setFontSize(9);
+      pdf.setTextColor(120, 120, 120);
+      const now = new Date();
+      const fecha = now.toLocaleDateString('es-CO', { year:'numeric', month:'2-digit', day:'2-digit' });
+      pdf.text(`Generado: ${fecha}`, margin, pageH - margin - 2);
+      pdf.text(`Página ${page}`, pageW - margin - 25, pageH - margin - 2);
+    }
+
+    // Reutilizamos un canvas temporal para "rebanar" la imagen original por páginas
+    const sliceCanvas = document.createElement('canvas');
+    const sctx = sliceCanvas.getContext('2d');
+
+    while (ySrc < canvas.height) {
+      sliceCanvas.width = canvas.width;
+      const hSrc = Math.min(sliceHeightSrc, canvas.height - ySrc);
+      sliceCanvas.height = hSrc;
+
+      // copiar porción
+      sctx.clearRect(0, 0, sliceCanvas.width, sliceCanvas.height);
+      sctx.drawImage(canvas, 0, ySrc, canvas.width, hSrc, 0, 0, canvas.width, hSrc);
+
+      // nueva página (o la primera)
+      if (page > 1) pdf.addPage();
+
+      drawHeader();
+
+      // agregar porción como imagen
+      const imgData = sliceCanvas.toDataURL('image/png');
+      const imgH = hSrc * scale;
+      pdf.addImage(
+        imgData,
+        'PNG',
+        margin,
+        margin + headerH,
+        contentW,
+        imgH
+      );
+
+      drawFooter();
+
+      ySrc += hSrc;
+      page += 1;
+    }
+
+    // Nombre de archivo amigable
+    const clean = (s) => s.replace(/[^\wáéíóúñÁÉÍÓÚÑ\s.-]/g, '').trim().replace(/\s+/g, '_');
+    const fname = `amortizacion_${clean(banco || 'banco')}_${Date.now()}.pdf`;
+    pdf.save(fname);
+  }
+
+  // Click del botón
+  window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('exportarPDF')?.addEventListener('click', generatePDFAmortizacion);
   });
 </script>
