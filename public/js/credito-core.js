@@ -3,12 +3,12 @@ export const BANCOS = {
   av_villas: {
     nombre: 'Av Villas',
     producto: '',
-    tasas: { mensual: 0.0157, trimestral: 0.0477, cuatrimestral: 0.0641, semestral: 0.0977, anual: 0.2050 }
+    tasas: { mensual: 0.0165, trimestral: 0.0504, cuatrimestral: 0.0678, semestral: 0.1034, anual: 0.2175 }
   },
   banco_w: {
     nombre: 'Banco W',
     producto: '',
-    tasas: { mensual: 0.0157, trimestral: 0.0477, cuatrimestral: 0.0641, semestral: 0.0977, anual: 0.3542 }
+    tasas: { mensual: 0.0202, trimestral: 0.0618, cuatrimestral: 0.0832, semestral: 0.1274, anual: 0.2710 }
   },
   caja_social: {
     nombre: 'Banco Caja Social',
@@ -18,32 +18,32 @@ export const BANCOS = {
   bancolombia: {
     nombre: 'Bancolombia',
     producto: 'Agrofácil',
-    tasas: { mensual: 0.0121, trimestral: 0.0366, cuatrimestral: 0.0491, semestral: 0.0745, anual: 0.1546 }
+    tasas: { mensual: 0.0124, trimestral: 0.0377, cuatrimestral: 0.0506, semestral: 0.0768, anual: 0.1595 }
   },
   bogota: {
     nombre: 'Banco de Bogotá',
     producto: 'FinaAgro',
-    tasas: { mensual: 0.0121, trimestral: 0.0477, cuatrimestral: 0.0641, semestral: 0.0977, anual: 0.1546 }
+    tasas: { mensual: 0.0137, trimestral: 0.0504, cuatrimestral: 0.0678, semestral: 0.1034, anual: 0.1775 }
   },
   mundo_mujer: {
     nombre: 'Mundo Mujer',
     producto: 'crédito productivo rural',
-    tasas: { mensual: 0.0157, trimestral: 0.0477, cuatrimestral: 0.0641, semestral: 0.0977, anual: 0.2126 }
+    tasas: { mensual: 0.0165, trimestral: 0.0504, cuatrimestral: 0.0678, semestral: 0.1034, anual: 0.2739 }
   },
   banco_agrario: {
     nombre: 'Banco Agrario de Colombia',
     producto: 'Mujer Rural (incluye pequeño productor)',
-    tasas: {mensual: 0.0107, trimestral: 0.0323, cuatrimestral: 0.0433, semestral: 0.0656, anual: 0.1356 }
+    tasas: { mensual: 0.0110, trimestral: 0.0334, cuatrimestral: 0.0448, semestral: 0.0679, anual: 0.1405 }
   },
   mi_banco: {
     nombre: 'Mi Banco',
     producto: 'Crédito Productivo Rural',
-    tasas: { mensual: 0.0160, trimestral: 0.0487, cuatrimestral: 0.0655, semestral: 0.0980, anual: 0.2095 }
+    tasas: { mensual: 0.0202, trimestral: 0.0617, cuatrimestral: 0.0831, semestral: 0.1272, anual: 0.2705 }
   },
   bancamia: {
     nombre: 'Bancamía',
     producto: 'AgroCrece Inversión',
-    tasas: { mensual: 0.0121, trimestral: 0.0366, cuatrimestral: 0.0491, semestral: 0.0745, anual: 0.1546 }
+    tasas: { mensual: 0.0124, trimestral: 0.0377, cuatrimestral: 0.0506, semestral: 0.0768, anual: 0.1595 }
   },
   cooperativa_avp: {
     nombre: 'Cooperativa AVP',
