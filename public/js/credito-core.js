@@ -8,7 +8,7 @@ export const BANCOS = {
   banco_w: {
     nombre: 'Banco W',
     producto: '',
-    tasas: { mensual: 0.0202, trimestral: 0.0618, cuatrimestral: 0.0832, semestral: 0.1274, anual: 0.2710 }
+    tasas: { mensual: 0.0202 , trimestral: 0.0618, cuatrimestral: 0.0832, semestral: 0.1274, anual: 0.2710 }
   },
   caja_social: {
     nombre: 'Banco Caja Social',
